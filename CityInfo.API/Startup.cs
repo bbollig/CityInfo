@@ -28,6 +28,7 @@ namespace CityInfo.API
                 app.UseExceptionHandler();
             }
 
+            app.UseStatusCodePages();
             app.UseMvc();
 
             //app.Run((context) =>
