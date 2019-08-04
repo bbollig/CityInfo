@@ -1,6 +1,8 @@
 ﻿using CityInfo.API.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 
 namespace CityInfo.API.Controllers
@@ -8,17 +10,34 @@ namespace CityInfo.API.Controllers
     [Route("api/cities")]
     public class PointsOfInterestController : Controller
     {
+        private ILogger<PointsOfInterestController> _logger;
+
+        //using constructor injection, we can request Services from the services IoC control
+        public PointsOfInterestController(ILogger<PointsOfInterestController> logger)
+        {
+            _logger = logger;
+        }
+
         [HttpGet("{cityid}/pointsofinterest")]
         public IActionResult GetPointsOfInterest(int cityId)
         {
-            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
-
-            if (city == null)
+            try
             {
-                return NotFound();
-            }
+                var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+                if (city == null)
+                {
+                    _logger.LogInformation($"City with Id {cityId} wasn't found when access Points of Interest.");
+                    return NotFound();
+                }
 
-            return Ok(city.PointsOfInterest);
+                return Ok(city.PointsOfInterest);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical($"Exception while getting points if interest for City with id: {cityId}", ex);
+                return StatusCode(500, "A problem occurred while handling your request.");
+            }
         }
 
         //We provide a Name to this attribute so that we can call it in the Post Reponse below
