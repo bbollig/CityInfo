@@ -21,6 +21,7 @@ namespace CityInfo.API.Controllers
             return Ok(city.PointsOfInterest);
         }
 
+        //We provide a Name to this attribute so that we can call it in the Post Reponse below
         [HttpGet("{cityid}/pointsofinterest/{id}", Name = "GetPointOfInterest")]
         public IActionResult GetPointOfInterest(int cityId, int id)
         {
@@ -79,6 +80,7 @@ namespace CityInfo.API.Controllers
             city.PointsOfInterest.Add(finalPointOfInterest);
 
 
+            // Here we are using the Name property of the HttpGet above
             return CreatedAtRoute("GetPointOfInterest", new {cityId, finalPointOfInterest.Id }, finalPointOfInterest);
         }
 
