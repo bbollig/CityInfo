@@ -17,6 +17,9 @@ namespace CityInfo.API.Entities
         [MaxLength(50)]
         public string Name { get; set; }
 
+        [MaxLength(200)]
+        public string Description { get; set; }
+
         //Leaving out the ForeignKey decoration would demonstrate convention-based approach to 
         //relationship discovery. The EFCore Framework will find this and realize the connection 
         //between the City entity and the PointOfInterest entity and will automatically map the 
