@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 using System;
+using CityInfo.API.Entities;
+using CityInfo.API.Extensions;
 
 namespace CityInfo.API
 {
@@ -15,7 +19,23 @@ namespace CityInfo.API
             try
             {
                 logger.Debug("init main");
-                CreateWebHostBuilder(args).Build().Run();
+                var host = CreateWebHostBuilder(args).Build();
+
+                // migrate the database.  Best practice = in Main, using service scope
+                using (var scope = host.Services.CreateScope())
+                {
+                    try
+                    {
+                        var context = scope.ServiceProvider.GetService<CityInfoContext>();
+                        context.Database.Migrate();
+                        context.EnsureSeedDataForContext();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex, "An error occurred while migrating the database.");
+                    }
+                }
+                host.Run();
             }
             catch (Exception ex)
             {
@@ -28,6 +48,7 @@ namespace CityInfo.API
                 // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
                 NLog.LogManager.Shutdown();
             }
+
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
