@@ -17,6 +17,12 @@ namespace CityInfo.API.Profiles
 
             //Create Mappings
             CreateMap<Models.PointofInterestForCreationDto, Entities.PointOfInterest>();
+
+            //Update Mappings
+            CreateMap<Models.PointOfInterestForUpdateDto, Entities.PointOfInterest>();
+
+            //Patch Mapping
+            CreateMap<Entities.PointOfInterest, Models.PointOfInterestForUpdateDto>();
         }
     }
 }
