@@ -31,7 +31,7 @@ namespace CityInfo.API
                 .AddMvcOptions(x => x.OutputFormatters.Add(
                     new XmlDataContractSerializerOutputFormatter()));
 
-            //***By default, Json.NET automatically returns objects with properties names using camelCase. To override this see the code below.
+            // ***By default, Json.NET automatically returns objects with properties names using camelCase. To override this see the code below.
             //services.AddMvc()
             //    .AddJsonOptions(o =>
             //    {
