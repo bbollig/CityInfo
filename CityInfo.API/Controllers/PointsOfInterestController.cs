@@ -89,28 +89,24 @@ namespace CityInfo.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
-
-            if (city == null)
+            if (!_cityInfoRepository.CityExists(cityId))
             {
                 return NotFound();
             }
 
-            //demo purposes - To be improved
-            var maxPointInterestId = CitiesDataStore.Current.Cities.SelectMany(c => c.PointsOfInterest).Max(p => p.Id);
 
-            var finalPointOfInterest = new PointOfInterestDto()
+            var finalPointOfInterest = _mapper.Map<Entities.PointOfInterest>(pointOfInterest);
+
+            _cityInfoRepository.AddPointOfInterestForCity(cityId, finalPointOfInterest);
+
+            if (!_cityInfoRepository.Save())
             {
-                Id = ++maxPointInterestId,
-                Name = pointOfInterest.Name,
-                Description = pointOfInterest.Description
-            };
+                return StatusCode(500, "A problem occurred while handling your request.");
+            }
 
-            city.PointsOfInterest.Add(finalPointOfInterest);
-
-
+            var createdPointOfInterestForReturn = _mapper.Map<Models.PointOfInterestDto>(finalPointOfInterest);
             // Here we are using the Name property of the HttpGet above
-            return CreatedAtRoute("GetPointOfInterest", new {cityId, finalPointOfInterest.Id }, finalPointOfInterest);
+            return CreatedAtRoute("GetPointOfInterest", new {cityId, createdPointOfInterestForReturn.Id }, createdPointOfInterestForReturn);
         }
 
         [HttpPut("{cityId}/pointsofinterest/{id}")]
