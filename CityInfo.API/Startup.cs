@@ -31,7 +31,6 @@ namespace CityInfo.API
                 .AddMvcOptions(x => x.OutputFormatters.Add(
                     new XmlDataContractSerializerOutputFormatter()));
 
-
             //***By default, Json.NET automatically returns objects with properties names using camelCase. To override this see the code below.
             //services.AddMvc()
             //    .AddJsonOptions(o =>
@@ -49,12 +48,12 @@ namespace CityInfo.API
 #else
             services.AddTransient<IMailService, CloudMailService>();
 #endif
+
             var connectionString = Startup.Configuration["connectionStrings:cityInfoDBConnectionString"];
             services.AddDbContext<CityInfoContext>(o => o.UseSqlServer(connectionString));
 
             services.AddScoped<ICityInfoRepository, CityInfoRepository>();
 
-            // Auto Mapper Configurations
             var mappingConfig = new MapperConfiguration(m =>
             {
                 m.AddProfile(new MappingProfile());
@@ -62,13 +61,11 @@ namespace CityInfo.API
 
             IMapper mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -79,17 +76,7 @@ namespace CityInfo.API
             }
 
             app.UseStatusCodePages();
-
             app.UseMvc();
-
-            //app.Run((context) =>
-            //{
-            //    throw new Exception("Example");
-            //});
-            //app.Run(async (context) =>
-            //{
-            //    await context.Response.WriteAsync("Hello World!");
-            //});
         }
     }
 }
