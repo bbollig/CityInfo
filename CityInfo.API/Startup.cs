@@ -9,6 +9,8 @@ using CityInfo.API.Services;
 using Microsoft.Extensions.Configuration;
 using CityInfo.API.Entities;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using CityInfo.API.Profiles;
 
 namespace CityInfo.API
 {
@@ -51,6 +53,16 @@ namespace CityInfo.API
             services.AddDbContext<CityInfoContext>(o => o.UseSqlServer(connectionString));
 
             services.AddScoped<ICityInfoRepository, CityInfoRepository>();
+
+            // Auto Mapper Configurations
+            var mappingConfig = new MapperConfiguration(m =>
+            {
+                m.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,6 +79,7 @@ namespace CityInfo.API
             }
 
             app.UseStatusCodePages();
+
             app.UseMvc();
 
             //app.Run((context) =>
