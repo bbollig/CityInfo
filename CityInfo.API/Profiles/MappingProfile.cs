@@ -10,9 +10,13 @@ namespace CityInfo.API.Profiles
     {
         public MappingProfile()
         {
+            //Get Mappings
             CreateMap<Entities.City, Models.CityWithoutPointsOfInterestDto>();
             CreateMap<Entities.City, Models.CityDto>();
             CreateMap<Entities.PointOfInterest, Models.PointOfInterestDto>();
+
+            //Create Mappings
+            CreateMap<Models.PointofInterestForCreationDto, Entities.PointOfInterest>();
         }
     }
 }
