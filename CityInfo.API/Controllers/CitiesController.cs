@@ -31,7 +31,7 @@ namespace CityInfo.API.Controllers
             return Ok(results);
         }
 
-        //[HttpGet("api/cities/{id}")] <--This is what he fully qualified route would look like
+        //[HttpGet("api/cities/{id}")] <--This is what the fully qualified route would look like
         [HttpGet("{id}")]//<--To work with parameters with http attributes, we use the curly brackets
         public IActionResult GetCity(int id, bool includePointsOfInterest = false)
         {
